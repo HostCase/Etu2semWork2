@@ -1,81 +1,120 @@
 #include <iostream>
 #include <cstdlib>
 using namespace std;
-struct list
-{
+
+struct list {
     int data;
-    list* head;
-    list* tail;
+    list* next;
+    list* prev;
 };
 
-list* createListRND(int length) {
-
-    list* curr = 0;
-    list* next = 0;
-
+list* createListRND() {
+    list* curr = nullptr;
+    list* next = nullptr;
+    cout << "Enter length:";
+    int length;
+    cin >> length;
     for (int i = 1; i <= length; ++i)
     {
-        curr = new list;
-        *(curr)->tail= rand() % 100;
-        curr->tail = next;
-        if (next) {
-            next->head = curr;
+        next = new list;
+        next->data = rand() % 100;
+        next->next = nullptr;
+        next->prev = curr;
+        if (curr) {
+            curr->next = next;
         }
-        next = curr;
+        curr = next;
     }
-
-    curr->head = 0;
-
     return curr;
-};
+}
 
-void addToList(list* start, int length) {
+void addToList(list* start) {
     list* curr = start;
-    for (int i = 1; i <= length; ++i) {
+    while (curr) {
         cin >> curr->data;
-        curr = curr->tail;
+        curr = curr->next;
     }
 }
 
-void showToList(list* start, int length) {
+void showToList(list* start) {
     list* curr = start;
-    for (int i = 1; i <= length; ++i) {
+    while (curr) {
         cout << curr->data << " ";
-        curr = curr->tail;
+        curr = curr->next;
     }
+    cout << endl;
 }
 
+void checkForNumbers() {
+    char a = cin.get();
+    while ((a < '0' || a > '9') && a != '-' && a != '+') {
+        cout << "Enter NUMBERS!: ";
+        cin >> a;
+    }
+    cin.unget();
+}
 
+list* createListInputMainFunc(list* curr = nullptr) {
+    checkForNumbers();
+    int data;
+    if ((cin.get() != '\n') && ((cin.unget()) >> data)) {
+        list* next = new list;
+        next->data = data;
+        next->prev = curr;
+        if (curr) curr->next = next;
+        return createListInputMainFunc(next);
+    }
+	else {
+		delete curr;
+		return nullptr;
+	}
+}
 
 int main() {
-    int choice;
+    list* start = nullptr;
+    int choice = 0;
     bool listcreated = false;
-    cout << "Choose\n";
-    cout << "Random list generation\n";
-    cin >> choice;
-    switch(choice){
-    case1: {
-        if (listcreated = true) {
-            cout << "Error. The sheet already exists\n";
+    do {
+        cout << "Choose\n";
+        cout << "1. Random list generation\n";
+        cout << "2. Manual list generation\n";
+        cout << "3. Show list\n";
+        cout << "4. ?\n";
+        cout << "10. Exit\n";
+        cin >> choice;
+        switch (choice) {
+        case 1: {
+            start = createListRND();
+            listcreated = true;
             break;
         }
-        int amount;
-        cin >> amount;
-        list* start = createListRND(amount);
-        listcreated = true;
-        break;
-        }
-    case 2:{
-        if (listcreated = true) {
-            cout << "Error. The sheet already exists\n";
+        case 2: {
+            start=createListInputMainFunc();
+            listcreated = true;
             break;
         }
+        case 3: {
+            if (listcreated == false) {
+                cout << "Error. The list no exists\n";
+                break;
+            }
+            showToList(start);
+            break;
+        }
+        case 4: {
+            if (listcreated == false) {
+                cout << "Error. The list no exists\n";
+                break;
+            }
+            showToList(start);
+            break;
+        }
+        default: {
+            cout << "Invalid choice\n";
+            break;
+        }
+        }
+    } while (choice != 10);
 
-        listcreated = true;
-    }
-    }
-
-    addToListrdn(start, amount);
-    showToList(start, amount);
     return 0;
 }
