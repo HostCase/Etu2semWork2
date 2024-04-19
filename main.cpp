@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <cstdlib>
 #include <vector>
@@ -42,13 +43,15 @@ void addToList(list* start) {
 void showToList(list* start) {
     list* curr = start;
     while (curr) {
-        cout << curr->data << " ";
+        cout << "Data: " << curr->data <<endl;
+
         curr = curr->next;
     }
     cout << endl;
 }
 
 vector<int> readNumbersFromConsole() {
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     string input;
     getline(cin, input);
     vector<int> numbers;
@@ -68,10 +71,12 @@ list* createListInputMainFunc(list* curr = nullptr) {
         list* next = new list;
         next->data = number;
         next->prev = curr;
-        if (curr) curr->next = next;
-        return createListInputMainFunc(next);
-
+        if (curr) {
+            curr->next = next;
+        }
+        curr = next;
     }
+    return curr;
 }
 
 int main() {
@@ -93,7 +98,8 @@ int main() {
             break;
         }
         case 2: {
-            start=createListInputMainFunc();
+            cout << "Enter numbers (separated by spaces): ";
+            start = createListInputMainFunc();
             listcreated = true;
             break;
         }
