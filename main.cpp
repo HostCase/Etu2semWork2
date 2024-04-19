@@ -1,5 +1,8 @@
 #include <iostream>
 #include <cstdlib>
+#include <vector>
+#include <string>
+#include <sstream>
 using namespace std;
 
 struct list {
@@ -45,29 +48,30 @@ void showToList(list* start) {
     cout << endl;
 }
 
-void checkForNumbers() {
-    char a = cin.get();
-    while ((a < '0' || a > '9') && a != '-' && a != '+') {
-        cout << "Enter NUMBERS!: ";
-        cin >> a;
+vector<int> readNumbersFromConsole() {
+    string input;
+    getline(cin, input);
+    vector<int> numbers;
+    stringstream ss(input);
+    int number;
+    while (ss >> number) {
+        numbers.push_back(number);
     }
-    cin.unget();
+
+    return numbers;
 }
 
 list* createListInputMainFunc(list* curr = nullptr) {
-    checkForNumbers();
     int data;
-    if ((cin.get() != '\n') && ((cin.unget()) >> data)) {
+    vector<int> numbers = readNumbersFromConsole();
+    for (int number : numbers) {
         list* next = new list;
-        next->data = data;
+        next->data = number;
         next->prev = curr;
         if (curr) curr->next = next;
         return createListInputMainFunc(next);
+
     }
-	else {
-		delete curr;
-		return nullptr;
-	}
 }
 
 int main() {
