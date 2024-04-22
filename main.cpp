@@ -15,11 +15,9 @@ struct list {
     list* prev;
 };
 
-list* createListRND() {
-    list* curr = nullptr;
+void createListRND(list* curr,int & length) {
     list* next = nullptr;
     cout << "Enter length:";
-    int length;
     cin >> length;
     auto start = std::chrono::high_resolution_clock::now();
     for (int i = 1; i <= length; ++i)
@@ -37,7 +35,6 @@ list* createListRND() {
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 
     cout << "Time taken by function: " << duration.count() << " microseconds" << endl;
-    return curr;
 }
 
 void addToList(list* start) {
@@ -75,13 +72,13 @@ vector<int> readNumbersFromConsole() {
     return numbers;
 }
 
-list* createListInputMainFunc() {
-    list* curr = nullptr;
+void createListInputMainFunc(list* curr, int & length) {
     list* next = nullptr;
     vector<int> numbers = readNumbersFromConsole();
     auto start = std::chrono::high_resolution_clock::now();
     for (int number : numbers) {
         curr = new list;
+        length += 1;
         curr->data = number;
         curr->next = next;
         if (next) {
@@ -94,12 +91,15 @@ list* createListInputMainFunc() {
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 
     cout << "Time taken by function: " << duration.count() << " microseconds" << endl;
-    return curr;
 }
+
+
+
 
 int main() {
     list* start = nullptr;
     int choice = 0;
+    int length = 0;
     bool listcreated = false;//для создания листов и при удалении сделать шоб было фолз
     bool listcreatedandreadyforwork = false;// тут сделать шоб при удалении был тоже фолз
     do {
@@ -117,7 +117,7 @@ int main() {
                 cout << "Error. List already created. Delete it with func for delete\n";
                 break;
             }
-            start = createListRND();
+            createListRND(start, length);
             listcreated = true;
             listcreatedandreadyforwork = true;
             break;
@@ -127,7 +127,7 @@ int main() {
                 cout << "Error. List already created. Delete it with func for delete\n";
                 break;
             }
-            start = createListInputMainFunc();
+            createListInputMainFunc(start, length);
             listcreated = true;
             listcreatedandreadyforwork = true;
             break;
@@ -153,7 +153,33 @@ int main() {
                 cout << "List is empty" << endl;
                 break;
             }
-            //fakefunc(start);
+            addToList(start);
+            break;
+        }
+        case 5: {
+            if (listcreatedandreadyforwork == false) {
+                cout << "Error. The list no exists\n";
+                break;
+            }
+            if (!start) {
+                cout << "List is empty" << endl;
+                break;
+            }
+            char choosef;
+            cout << "Choose what you want\nEnter a - By index\nEnter b - By value" << endl;
+            cin >> choosef;
+            system("cls");
+            switch(choosef){
+            case 1: {
+                
+                removebyindex(start);
+                break;
+            }
+            case 2: {
+                removebyvalue(start);
+                break;
+            }
+            }
             break;
         }
         case 10: {
