@@ -37,7 +37,7 @@ void createListRND(list* curr,int & length) {
     cout << "Time taken by function: " << duration.count() << " microseconds" << endl;
 }
 
-void addToList(list* start) {
+void addToList(list* start,int &start) {
     list* curr = start;
     while (curr) {
         cin >> curr->data;
