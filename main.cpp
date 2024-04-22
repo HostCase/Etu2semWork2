@@ -21,6 +21,7 @@ list* createListRND() {
     cout << "Enter length:";
     int length;
     cin >> length;
+    auto start = std::chrono::high_resolution_clock::now();
     for (int i = 1; i <= length; ++i)
     {
         curr = new list;
@@ -32,7 +33,10 @@ list* createListRND() {
         next = curr;
     }
     curr->prev = 0;
-    
+    auto stop = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+
+    cout << "Time taken by function: " << duration.count() << " microseconds" << endl;
     return curr;
 }
 
@@ -57,6 +61,7 @@ void showToList(list* start) {
 }
 
 vector<int> readNumbersFromConsole() {
+    cout << "Enter numbers (separated by spaces): ";
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     string input;
     getline(cin, input);
@@ -74,6 +79,7 @@ list* createListInputMainFunc() {
     list* curr = nullptr;
     list* next = nullptr;
     vector<int> numbers = readNumbersFromConsole();
+    auto start = std::chrono::high_resolution_clock::now();
     for (int number : numbers) {
         curr = new list;
         curr->data = number;
@@ -84,13 +90,18 @@ list* createListInputMainFunc() {
         next = curr;
     }
     curr->prev = 0;
+    auto stop = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+
+    cout << "Time taken by function: " << duration.count() << " microseconds" << endl;
     return curr;
 }
 
 int main() {
     list* start = nullptr;
     int choice = 0;
-    bool listcreated = false;
+    bool listcreated = false;//для создания листов и при удалении сделать шоб было фолз
+    bool listcreatedandreadyforwork = false;// тут сделать шоб при удалении был тоже фолз
     do {
         cout << "Choose\n";
         cout << "1. Random list generation\n";
@@ -102,18 +113,27 @@ int main() {
         system("cls");
         switch (choice) {
         case 1: {
+            if (listcreated == true) {
+                cout << "Error. List already created. Delete it with func for delete\n";
+                break;
+            }
             start = createListRND();
             listcreated = true;
+            listcreatedandreadyforwork = true;
             break;
         }
         case 2: {
-            cout << "Enter numbers (separated by spaces): ";
+            if (listcreated == true) {
+                cout << "Error. List already created. Delete it with func for delete\n";
+                break;
+            }
             start = createListInputMainFunc();
             listcreated = true;
+            listcreatedandreadyforwork = true;
             break;
         }
         case 3: {
-            if (listcreated == false) {
+            if (listcreatedandreadyforwork == false) {
                 cout << "Error. The list no exists\n";
                 break;
             }
@@ -125,7 +145,7 @@ int main() {
             break;
         }
         case 4: {
-            if (listcreated == false) {
+            if (listcreatedandreadyforwork == false) {
                 cout << "Error. The list no exists\n";
                 break;
             }
@@ -133,7 +153,7 @@ int main() {
                 cout << "List is empty" << endl;
                 break;
             }
-            showToList(start);
+            ??func(start);
             break;
         }
         case 10: {
