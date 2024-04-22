@@ -4,6 +4,9 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <stdlib.h>
+#include <iomanip>
+#include <chrono>
 using namespace std;
 
 struct list {
@@ -20,15 +23,16 @@ list* createListRND() {
     cin >> length;
     for (int i = 1; i <= length; ++i)
     {
-        next = new list;
-        next->data = rand() % 100;
-        next->next = nullptr;
-        next->prev = curr;
-        if (curr) {
-            curr->next = next;
+        curr = new list;
+        curr->data = rand() % 100;
+        curr->next = next;
+        if (next) {
+            next->prev = curr;
         }
-        curr = next;
+        next = curr;
     }
+    curr->prev = 0;
+    
     return curr;
 }
 
@@ -42,12 +46,14 @@ void addToList(list* start) {
 
 void showToList(list* start) {
     list* curr = start;
+    cout << "/////////////" << endl;
+        
     while (curr) {
-        cout << "Data: " << curr->data <<endl;
-
+        //cout <<curr->data <<endl;
+        cout << right << setw(7) << curr->data << endl;
         curr = curr->next;
     }
-    cout << endl;
+    cout << "/////////////" << endl;
 }
 
 vector<int> readNumbersFromConsole() {
@@ -64,18 +70,20 @@ vector<int> readNumbersFromConsole() {
     return numbers;
 }
 
-list* createListInputMainFunc(list* curr = nullptr) {
-    int data;
+list* createListInputMainFunc() {
+    list* curr = nullptr;
+    list* next = nullptr;
     vector<int> numbers = readNumbersFromConsole();
     for (int number : numbers) {
-        list* next = new list;
-        next->data = number;
-        next->prev = curr;
-        if (curr) {
-            curr->next = next;
+        curr = new list;
+        curr->data = number;
+        curr->next = next;
+        if (next) {
+            next->prev = curr;
         }
-        curr = next;
+        next = curr;
     }
+    curr->prev = 0;
     return curr;
 }
 
@@ -91,6 +99,7 @@ int main() {
         cout << "4. ?\n";
         cout << "10. Exit\n";
         cin >> choice;
+        system("cls");
         switch (choice) {
         case 1: {
             start = createListRND();
@@ -108,6 +117,10 @@ int main() {
                 cout << "Error. The list no exists\n";
                 break;
             }
+            if (!start) {
+                cout << "List is empty" << endl;
+                break;
+            }
             showToList(start);
             break;
         }
@@ -116,7 +129,15 @@ int main() {
                 cout << "Error. The list no exists\n";
                 break;
             }
+            if (!start) {
+                cout << "List is empty" << endl;
+                break;
+            }
             showToList(start);
+            break;
+        }
+        case 10: {
+            cout << "Exit";
             break;
         }
         default: {
