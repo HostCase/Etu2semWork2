@@ -153,7 +153,7 @@ int main() {
                 cout << "List is empty" << endl;
                 break;
             }
-            ??func(start);
+            //fakefunc(start);
             break;
         }
         case 10: {
