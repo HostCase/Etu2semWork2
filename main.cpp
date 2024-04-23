@@ -119,6 +119,59 @@ void createListInputMainFunc(list*& curr, int & length) {
 
 }
 
+void swaplist(list*& start,int length) {
+    cout << "Enter index of first element to swap" << endl;
+    int index1 = 0;
+    cin >> index1;
+    cout << "Enter index of second element to swap" << endl;
+    int index2 = 0;
+    cin >> index2;
+    if (index1 == index2 || index1 < 0 || index1 > length || index2 < 0 || index2 > length) return;
+    list* node1 = nullptr, * node2 = nullptr, * prev1 = nullptr, * prev2 = nullptr;
+    list* curr = start;
+    int count = 0;
+    index1 -= 1;
+    index2 -= 1;
+    auto start_time = std::chrono::high_resolution_clock::now();
+    while (curr != nullptr) {
+        if (count == index1) {
+            node1 = curr;
+            if (curr->prev != nullptr) prev1 = curr->prev;
+        }
+        else if (count == index2) {
+            node2 = curr;
+            if (curr->prev != nullptr) prev2 = curr->prev;
+        }
+        curr = curr->next;
+        count++;
+    }
+
+    if (node1 != nullptr && node2 != nullptr) {
+        if (prev1 != nullptr) prev1->next = node2;
+        if (prev2 != nullptr) prev2->next = node1;
+
+        curr = node1->next;
+        node1->next = node2->next;
+        node2->next = curr;
+
+        if (node1->next != nullptr) node1->next->prev = node1;
+        if (node2->next != nullptr) node2->next->prev = node2;
+
+        curr = node1->prev;
+        node1->prev = node2->prev;
+        node2->prev = curr;
+
+        if (index1 == 0) start = node2;
+        if (index2 == 0) start = node1;
+    }
+
+    auto stop_time = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop_time - start_time);
+
+    cout << "Time taken by function: " << duration.count() << " microseconds" << endl;
+}
+
+
 void removebyindex(list*&start, int& length) {
     int index=-100;
     cout << "Enter index of element" << endl;
@@ -186,28 +239,89 @@ void removeByValue(list*& start, int& length) {
     length--;
 }
 
-void deleteList(list* start) {
+void deleteList(list*& start,int& length) {
     list* curr = start;
     while (curr) {
         list* next = curr->next;
         delete curr;
         curr = next;
     }
+    length = 0;
+    start = nullptr;
+}
+
+void getvaluebyindex(list* start, int length) {
+    int index = -100;
+    cout << "Enter index of element" << endl;
+    while (index < 0 || index >= length) {
+        cout << "0 <= Index < " << length << endl;
+        cin >> index;
+    }
+    index -= 1;
+    list* curr = start;
+    for (int i = 0; curr != nullptr && i < index; i++)
+        curr = curr->next;
+
+    if (curr == nullptr)
+        return;
+
+    cout << "Element = " << curr->data << endl;
+}
+
+void getByValue(list* start) {
+    int value, countelem(0),countall(1);
+    vector<int> indexElements;
+    cout << "Enter value of element:" << endl;
+    cin >> value;
+
+    list* curr = start;
+
+    while (curr != nullptr) {
+        curr = curr->next;
+        if (curr->data == value) {
+            countelem += 1;
+            indexElements.push_back(countall);
+        }
+        countall += 1;
+    }
+
+    if ((curr == nullptr) & (countelem==0)) {
+        cout << "Element with this value not found." << endl;
+        return;
+    }
+    while (countall) {
+        cout << "Element founded: " << countall<< endl;
+    }
+    
 }
 
 int main() {
     list* start = nullptr;
     int choice = 0;
     int length = 0;
-    bool listcreated = false;//для создания листов и при удалении сделать шоб было фолз
-    bool listcreatedandreadyforwork = false;// тут сделать шоб при удалении был тоже фолз
+    bool listcreated = false;
+    bool listcreatedandreadyforwork = false;
     do {
-        cout << "Choose\n";
+        if (!listcreated) {
+            cout << "You should create a new list\n";
+        }
+        if (!length& listcreated) {
+            deleteList(start,length);
+            listcreated = false;
+            listcreatedandreadyforwork = false;
+            cout << "List was deleted automaticly because it had 0 elements \n";
+            cout << "You should create a new list\n";
+        }
+        cout << "\nChoose\n";
         cout << "1. Random list generation\n";
         cout << "2. Manual list generation\n";
         cout << "3. Show list\n";
         cout << "4. Add to list\n";
         cout << "5. Remove from list\n";
+        cout << "6. Clear list\n";
+        cout << "7. Swap el of list\n";
+        cout << "8. Get value by index\n";
+        cout << "9. Get value by value\n";
         cout << "10. Exit\n";
         cin >> choice;
         system("cls");
@@ -291,8 +405,49 @@ int main() {
                 cout << "List is empty" << endl;
                 break;
             }
-            deleteList(start);
+            deleteList(start, length);
+            start = nullptr;
+            bool listcreated = false;
+            bool listcreatedandreadyforwork = false;
+            break;
         }
+        case 7: {
+            if (listcreatedandreadyforwork == false) {
+                cout << "Error. The list no exists\n";
+                break;
+            }
+            if (!length) {
+                cout << "List is empty" << endl;
+                break;
+            }
+            swaplist(start, length);
+            
+        }
+        case 8: {
+            if (listcreatedandreadyforwork == false) {
+                cout << "Error. The list no exists\n";
+                break;
+            }
+            if (!length) {
+                cout << "List is empty" << endl;
+                break;
+            }
+            getvaluebyindex(start, length);
+
+        }
+        case 9: {
+            if (listcreatedandreadyforwork == false) {
+                cout << "Error. The list no exists\n";
+                break;
+            }
+            if (!length) {
+                cout << "List is empty" << endl;
+                break;
+            }
+            getByValue(start);
+
+        }
+              
         case 10: {
             cout << "Exit";
             break;
