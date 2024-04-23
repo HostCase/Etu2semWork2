@@ -269,7 +269,7 @@ void getvaluebyindex(list* start, int length) {
 }
 
 void getByValue(list* start) {
-    int value, countelem(0),countall(1);
+    int value, countelem(0), countall(1);
     vector<int> indexElements;
     cout << "Enter value of element:" << endl;
     cin >> value;
@@ -277,22 +277,21 @@ void getByValue(list* start) {
     list* curr = start;
 
     while (curr != nullptr) {
-        curr = curr->next;
         if (curr->data == value) {
             countelem += 1;
             indexElements.push_back(countall);
         }
+        curr = curr->next;
         countall += 1;
     }
 
-    if ((curr == nullptr) & (countelem==0)) {
+    if (countelem == 0) {
         cout << "Element with this value not found." << endl;
         return;
     }
-    while (countall) {
-        cout << "Element founded: " << countall<< endl;
+    for (int number : indexElements) {
+        cout << "Element founded: " << number << endl;
     }
-    
 }
 
 int main() {
