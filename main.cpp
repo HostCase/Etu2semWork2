@@ -34,23 +34,28 @@ void createListRND(list* curr,int & length) {
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 
     cout << "Time taken by function: " << duration.count() << " microseconds" << endl;
+    delete next;
 }
 
 void addToList(list* start,int & length) {
-    int newElIndex;
+    int newElIndex=-100;
+    list* next = nullptr;
     cout << "Enter index of element(new will be added after this)" << endl;
-    while (length >= newElIndex) {
+    cout << "Or 0, new element will take place at 0 position " << endl;
+    while (length >= newElIndex || newElIndex<0) {
         cout << "No more " << length << endl;
         cin >> newElIndex;
     }
     list* curr = start;
-    for (int i = 1; i <= newElIndex; ++i) {
-        curr = curr->next;
+    if(newElIndex){
+        for (int i = 1; i <= newElIndex; ++i) {
+            curr = curr->next;
+        }
+        list* next = curr->next;
     }
-    list* next = curr->next;
     list* currnew = new list;
-    currnew->prev = curr;
-    curr->next = currnew;
+    newElIndex ? currnew->prev = curr : currnew->prev = nullptr;
+    newElIndex ? curr->next = currnew : curr->prev = currnew;
     cout << "Enter value for new element" << endl;
     cin>>currnew->data;
     if (next) {
@@ -60,6 +65,7 @@ void addToList(list* start,int & length) {
     else;
         currnew->next = nullptr;
     length += 1;
+    delete curr, next;
 }
 
 void showToList(list* start) {
@@ -72,6 +78,7 @@ void showToList(list* start) {
         i += 1;
     }
     cout << "/////////////" << endl;
+    delete curr;
 }
 
 vector<int> readNumbersFromConsole() {
@@ -108,10 +115,44 @@ void createListInputMainFunc(list* curr, int & length) {
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 
     cout << "Time taken by function: " << duration.count() << " microseconds" << endl;
+    delete next;
 }
 
+void removebyindex(list* start, int& length) {
+    int index=-100;
+    cout << "Enter index of element" << endl;
+    while (length >= index || index < 0) {
+        cout << "0<Index< " << length << endl;
+        cin >> index;
+    }
 
+    list* curr = start;
 
+    if (index == 0) {
+        start = curr->next;
+        if (curr->next != nullptr)
+            curr->next->prev = nullptr;
+        delete curr;
+        length--;
+        return;
+    }
+
+    for (int i = 0; curr != nullptr && i < index - 1; i++)
+        curr = curr->next;
+
+    if (curr == nullptr || curr->next == nullptr)
+        return;
+
+    list* next = curr->next->next;
+
+    delete curr->next;
+
+    curr->next = next;
+    if (next != nullptr)
+        next->prev = curr;
+
+    length--;
+}
 
 int main() {
     list* start = nullptr;
@@ -154,7 +195,7 @@ int main() {
                 cout << "Error. The list no exists\n";
                 break;
             }
-            if (!start) {
+            if (!length) {
                 cout << "List is empty" << endl;
                 break;
             }
@@ -166,11 +207,11 @@ int main() {
                 cout << "Error. The list no exists\n";
                 break;
             }
-            if (!start) {
+            if (!length) {
                 cout << "List is empty" << endl;
                 break;
             }
-            addToList(start);
+            addToList(start, length);
             break;
         }
         case 5: {
@@ -193,7 +234,8 @@ int main() {
                 break;
             }
             case 2: {
-                removebyvalue(start, length);
+                removebyindex(start, length);
+                //removebyvalue(start, length);
                 break;
             }
             }
