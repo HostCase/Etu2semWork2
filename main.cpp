@@ -14,7 +14,7 @@ struct list {
     list* prev;
 };
 
-void createListRND(list* curr,int & length) {
+void createListRND(list*& curr, int& length) {
     list* next = nullptr;
     cout << "Enter length:";
     cin >> length;
@@ -34,7 +34,6 @@ void createListRND(list* curr,int & length) {
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 
     cout << "Time taken by function: " << duration.count() << " microseconds" << endl;
-    delete next;
 }
 
 void addToList(list* start,int & length) {
@@ -68,17 +67,16 @@ void addToList(list* start,int & length) {
     delete curr, next;
 }
 
-void showToList(list* start) {
+void showToList(list* start, int length) {
     list* curr = start;
-    cout << "/////////////" << endl;
     int i = 1;
+    cout << "/////////////" << endl;
     while (curr) {
-        cout<<i<<"." << right << setw(7) << curr->data << endl;
+        cout<<"index "<< i<<"   " << right << setw(7) << curr->data << endl;
         curr = curr->next;
         i += 1;
     }
     cout << "/////////////" << endl;
-    delete curr;
 }
 
 vector<int> readNumbersFromConsole() {
@@ -96,7 +94,7 @@ vector<int> readNumbersFromConsole() {
     return numbers;
 }
 
-void createListInputMainFunc(list* curr, int & length) {
+void createListInputMainFunc(list*& curr, int & length) {
     list* next = nullptr;
     vector<int> numbers = readNumbersFromConsole();
     auto start = std::chrono::high_resolution_clock::now();
@@ -115,19 +113,18 @@ void createListInputMainFunc(list* curr, int & length) {
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 
     cout << "Time taken by function: " << duration.count() << " microseconds" << endl;
-    delete next;
+
 }
 
-void removebyindex(list* start, int& length) {
+void removebyindex(list*&start, int& length) {
     int index=-100;
     cout << "Enter index of element" << endl;
-    while (length >= index || index < 0) {
+    while (index < 0 || index > length) {
         cout << "0<Index< " << length << endl;
         cin >> index;
     }
-
     list* curr = start;
-
+    index -= 1;
     if (index == 0) {
         start = curr->next;
         if (curr->next != nullptr)
@@ -154,6 +151,47 @@ void removebyindex(list* start, int& length) {
     length--;
 }
 
+void removeByValue(list*& start, int& length) {
+    int value;
+    cout << "Enter value of element to remove:" << endl;
+    cin >> value;
+
+    list* curr = start;
+
+    if (curr != nullptr && curr->data == value) {
+        start = curr->next;
+        if (curr->next != nullptr)
+            curr->next->prev = nullptr;
+        delete curr;
+        length--;
+        return;
+    }
+
+    while (curr != nullptr && curr->data != value) {
+        curr = curr->next;
+    }
+
+    if (curr == nullptr) return;
+
+    list* next = curr->next;
+    if (curr->prev != nullptr)
+        curr->prev->next = next;
+    if (next != nullptr)
+        next->prev = curr->prev;
+
+    delete curr;
+    length--;
+}
+
+void deleteList(list* start) {
+    list* curr = start;
+    while (curr) {
+        list* next = curr->next;
+        delete curr;
+        curr = next;
+    }
+}
+
 int main() {
     list* start = nullptr;
     int choice = 0;
@@ -165,7 +203,8 @@ int main() {
         cout << "1. Random list generation\n";
         cout << "2. Manual list generation\n";
         cout << "3. Show list\n";
-        cout << "4. ?\n";
+        cout << "4. Add to list\n";
+        cout << "5. Remove from list\n";
         cout << "10. Exit\n";
         cin >> choice;
         system("cls");
@@ -199,7 +238,7 @@ int main() {
                 cout << "List is empty" << endl;
                 break;
             }
-            showToList(start);
+            showToList(start, length);
             break;
         }
         case 4: {
@@ -223,8 +262,8 @@ int main() {
                 cout << "List is empty" << endl;
                 break;
             }
-            char choosef;
-            cout << "Choose what you want\nEnter a - By index\nEnter b - By value" << endl;
+            int choosef;
+            cout << "Choose what you want\nEnter 1 - By index\nEnter 2 - By value" << endl;
             cin >> choosef;
             system("cls");
             switch(choosef){
@@ -234,12 +273,22 @@ int main() {
                 break;
             }
             case 2: {
-                removebyindex(start, length);
-                //removebyvalue(start, length);
+                removeByValue(start, length);
                 break;
             }
             }
             break;
+        }
+        case 6: {
+            if (listcreatedandreadyforwork == false) {
+                cout << "Error. The list no exists\n";
+                break;
+            }
+            if (!length) {
+                cout << "List is empty" << endl;
+                break;
+            }
+            deleteList(start);
         }
         case 10: {
             cout << "Exit";
