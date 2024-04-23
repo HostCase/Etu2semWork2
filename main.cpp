@@ -40,12 +40,13 @@ void addToList(list*&start, int& length) {
     int newElIndex = -100;
     list* next = nullptr;
     cout << "Enter index of element(new will be added after this)" << endl;
-    cout << "Or 0, new element will take place at 0 position " << endl;
+    cout << "Or 1, new element will take place at first position " << endl;
     while (newElIndex < 1 || newElIndex > length) {
         cout << "0<index<=" << length << endl;
         cin >> newElIndex;
     }
     newElIndex -= 1;
+    auto startTime = chrono::high_resolution_clock::now();
     list* curr = start;
     if (newElIndex) {
         for (int i = 1; i <= newElIndex; ++i) {
@@ -67,6 +68,9 @@ void addToList(list*&start, int& length) {
     }
     else
         currnew->next = nullptr;
+    auto stop = chrono::high_resolution_clock::now();
+    auto duration = chrono::duration_cast<chrono::microseconds>(stop - startTime);
+    cout << "Time taken adding new element: " << duration.count() << " microseconds" << endl;
     length += 1;
 }
 
@@ -179,6 +183,7 @@ void removebyindex(list*&start, int& length) {
         cout << "0<Index< " << length << endl;
         cin >> index;
     }
+    auto startTime = chrono::high_resolution_clock::now();
     list* curr = start;
     index -= 1;
     if (index == 0) {
@@ -204,6 +209,9 @@ void removebyindex(list*&start, int& length) {
     if (next != nullptr)
         next->prev = curr;
 
+    auto stop = chrono::high_resolution_clock::now();
+    auto duration = chrono::duration_cast<chrono::microseconds>(stop - startTime);
+    cout << "Time taken removing element: " << duration.count() << " microseconds" << endl;
     length--;
 }
 
@@ -213,7 +221,7 @@ void removeByValue(list*& start, int& length) {
     cin >> value;
 
     list* curr = start;
-
+    auto startTime = chrono::high_resolution_clock::now();
     if (curr != nullptr && curr->data == value) {
         start = curr->next;
         if (curr->next != nullptr)
@@ -236,6 +244,9 @@ void removeByValue(list*& start, int& length) {
         next->prev = curr->prev;
 
     delete curr;
+    auto stop = chrono::high_resolution_clock::now();
+    auto duration = chrono::duration_cast<chrono::microseconds>(stop - startTime);
+    cout << "Time taken removing element: " << duration.count() << " microseconds" << endl;
     length--;
 }
 
@@ -258,6 +269,7 @@ void getvaluebyindex(list* start, int length) {
         cin >> index;
     }
     index -= 1;
+    auto startTime = chrono::high_resolution_clock::now();
     list* curr = start;
     for (int i = 0; curr != nullptr && i < index; i++)
         curr = curr->next;
@@ -266,6 +278,9 @@ void getvaluebyindex(list* start, int length) {
         return;
 
     cout << "Element = " << curr->data << endl;
+    auto stop = chrono::high_resolution_clock::now();
+    auto duration = chrono::duration_cast<chrono::microseconds>(stop - startTime);
+    cout << "Time taken: " << duration.count() << " microseconds" << endl;
 }
 
 void getByValue(list* start) {
@@ -273,7 +288,7 @@ void getByValue(list* start) {
     vector<int> indexElements;
     cout << "Enter value of element:" << endl;
     cin >> value;
-
+    auto startTime = chrono::high_resolution_clock::now();
     list* curr = start;
 
     while (curr != nullptr) {
@@ -292,6 +307,88 @@ void getByValue(list* start) {
     for (int number : indexElements) {
         cout << "Element founded: " << number << endl;
     }
+    auto stop = chrono::high_resolution_clock::now();
+    auto duration = chrono::duration_cast<chrono::microseconds>(stop - startTime);
+    cout << "Time taken: " << duration.count() << " microseconds" << endl;
+}
+
+void shakerSortArra(int* arr, int count) {
+    bool swapped;
+    do {
+        swapped = false;
+        for (int i = 0; i < count - 1; i++) {
+            if (arr[i] > arr[i + 1]) {
+                swap(arr[i], arr[i + 1]);
+                swapped = true;
+            }
+        }
+
+        if (!swapped)
+            break;
+
+        swapped = false;
+        for (int i = count - 2; i >= 0; i--) {
+            if (arr[i] > arr[i + 1]) {
+                swap(arr[i], arr[i + 1]);
+                swapped = true;
+            }
+        }
+    } while (swapped);
+}
+
+void shakerSort(list*& start) {
+    if (start == nullptr || start->next == nullptr)
+        return;
+
+    int count = 0;
+    list* curr = start;
+    while (curr != nullptr) {
+        count++;
+        curr = curr->next;
+    }
+
+    int* arr = new int[count];
+
+    curr = start;
+    for (int i = 0; i < count; i++) {
+        arr[i] = curr->data;
+        curr = curr->next;
+    }
+    auto startTime = chrono::high_resolution_clock::now();
+    shakerSortArra(arr, count);
+    auto stop = chrono::high_resolution_clock::now();
+    auto duration = chrono::duration_cast<chrono::microseconds>(stop - startTime);
+    cout << "Time taken sorting arr: " << duration.count() << " microseconds" << endl;
+
+
+    startTime = std::chrono::high_resolution_clock::now();
+    bool swapped;
+    do {
+        swapped = false;
+        list* curr = start;
+        while (curr->next != nullptr) {
+            if (curr->data > curr->next->data) {
+                swap(curr->data, curr->next->data);
+                swapped = true;
+            }
+            curr = curr->next;
+        }
+
+        if (!swapped)
+            break;
+
+        swapped = false;
+        while (curr->prev != nullptr) {
+            if (curr->data < curr->prev->data) {
+                swap(curr->data, curr->prev->data);
+                swapped = true;
+            }
+            curr = curr->prev;
+        }
+    } while (swapped);
+    stop = std::chrono::high_resolution_clock::now();
+    duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - startTime);
+    cout << "Time taken sorting list: " << duration.count() << " microseconds" << endl;
 }
 
 int main() {
@@ -321,7 +418,8 @@ int main() {
         cout << "7. Swap el of list\n";
         cout << "8. Get value by index\n";
         cout << "9. Get value by value\n";
-        cout << "10. Exit\n";
+        cout << "10. Shaker sort(idz2)\n";
+        cout << "11. Exit\n";
         cin >> choice;
         system("cls");
         switch (choice) {
@@ -420,7 +518,7 @@ int main() {
                 break;
             }
             swaplist(start, length);
-            
+            break;
         }
         case 8: {
             if (listcreatedandreadyforwork == false) {
@@ -432,7 +530,7 @@ int main() {
                 break;
             }
             getvaluebyindex(start, length);
-
+            break;
         }
         case 9: {
             if (listcreatedandreadyforwork == false) {
@@ -444,10 +542,22 @@ int main() {
                 break;
             }
             getByValue(start);
-
+            break;
+        }
+        case 10: {
+            if (listcreatedandreadyforwork == false) {
+                cout << "Error. The list no exists\n";
+                break;
+            }
+            if (!length) {
+                cout << "List is empty" << endl;
+                break;
+            }
+            shakerSort(start);
+            break;
         }
               
-        case 10: {
+        case 11: {
             cout << "Exit";
             break;
         }
@@ -456,7 +566,7 @@ int main() {
             break;
         }
         }
-    } while (choice != 10);
+    } while (choice != 11);
 
     return 0;
 }
