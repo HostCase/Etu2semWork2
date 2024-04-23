@@ -41,10 +41,11 @@ void addToList(list*&start, int& length) {
     list* next = nullptr;
     cout << "Enter index of element(new will be added after this)" << endl;
     cout << "Or 0, new element will take place at 0 position " << endl;
-    while (newElIndex < 0 || newElIndex > length) {
-        cout << "No more " << length << endl;
+    while (newElIndex < 1 || newElIndex > length) {
+        cout << "0<index<=" << length << endl;
         cin >> newElIndex;
     }
+    newElIndex -= 1;
     list* curr = start;
     if (newElIndex) {
         for (int i = 1; i <= newElIndex; ++i) {
