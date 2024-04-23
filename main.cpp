@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <cstdlib>
 #include <vector>
@@ -38,20 +37,39 @@ void createListRND(list* curr,int & length) {
 }
 
 void addToList(list* start,int & length) {
-    for (int i = 1; i <= length; ++i) {
-
+    int newElIndex;
+    cout << "Enter index of element(new will be added after this)" << endl;
+    while (length >= newElIndex) {
+        cout << "No more " << length << endl;
+        cin >> newElIndex;
     }
+    list* curr = start;
+    for (int i = 1; i <= newElIndex; ++i) {
+        curr = curr->next;
+    }
+    list* next = curr->next;
+    list* currnew = new list;
+    currnew->prev = curr;
+    curr->next = currnew;
+    cout << "Enter value for new element" << endl;
+    cin>>currnew->data;
+    if (next) {
+        currnew->next = next;
+        (*next).prev = currnew;
+    }
+    else;
+        currnew->next = nullptr;
     length += 1;
 }
 
 void showToList(list* start) {
     list* curr = start;
     cout << "/////////////" << endl;
-        
+    int i = 1;
     while (curr) {
-        //cout <<curr->data <<endl;
-        cout << right << setw(7) << curr->data << endl;
+        cout<<i<<"." << right << setw(7) << curr->data << endl;
         curr = curr->next;
+        i += 1;
     }
     cout << "/////////////" << endl;
 }
@@ -171,11 +189,11 @@ int main() {
             switch(choosef){
             case 1: {
                 
-                removebyindex(start);
+                removebyindex(start, length);
                 break;
             }
             case 2: {
-                removebyvalue(start);
+                removebyvalue(start, length);
                 break;
             }
             }
