@@ -36,35 +36,37 @@ void createListRND(list*& curr, int& length) {
     cout << "Time taken by function: " << duration.count() << " microseconds" << endl;
 }
 
-void addToList(list* start,int & length) {
-    int newElIndex=-100;
+void addToList(list*&start, int& length) {
+    int newElIndex = -100;
     list* next = nullptr;
     cout << "Enter index of element(new will be added after this)" << endl;
     cout << "Or 0, new element will take place at 0 position " << endl;
-    while (length >= newElIndex || newElIndex<0) {
+    while (newElIndex < 0 || newElIndex > length) {
         cout << "No more " << length << endl;
         cin >> newElIndex;
     }
     list* curr = start;
-    if(newElIndex){
+    if (newElIndex) {
         for (int i = 1; i <= newElIndex; ++i) {
             curr = curr->next;
         }
-        list* next = curr->next;
+        next = curr->next;
+    }
+    else {
+        next = start;
     }
     list* currnew = new list;
     newElIndex ? currnew->prev = curr : currnew->prev = nullptr;
-    newElIndex ? curr->next = currnew : curr->prev = currnew;
+    newElIndex ? curr->next = currnew : start = currnew;
     cout << "Enter value for new element" << endl;
-    cin>>currnew->data;
+    cin >> currnew->data;
     if (next) {
         currnew->next = next;
-        (*next).prev = currnew;
+        next->prev = currnew;
     }
-    else;
+    else
         currnew->next = nullptr;
     length += 1;
-    delete curr, next;
 }
 
 void showToList(list* start, int length) {
