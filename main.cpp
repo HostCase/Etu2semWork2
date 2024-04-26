@@ -34,20 +34,19 @@ void createListRND(list*& curr, int& length) {
     cout << "Time taken by function: " << duration.count() << " microseconds" << endl;
 }
 
-void addToList(list*&start, int& length) {
-    int newElIndex = -100;
+void addToList(list*& start, int& length) {
+    int newElIndex = -1;
     list* next = nullptr;
     cout << "Enter index of element(new will be added after this)" << endl;
-    cout << "Or 1, new element will take place at first position " << endl;
-    while (newElIndex < 1 || newElIndex > length) {
-        cout << "0<index<=" << length << endl;
+    cout << "Or 0, new element will take place at first position " << endl;
+    while (newElIndex < 0 || newElIndex > length) {
+        cout << "0<=index<=" << length << endl;
         cin >> newElIndex;
     }
-    newElIndex -= 1;
     auto startTime = chrono::high_resolution_clock::now();
     list* curr = start;
-    if (newElIndex) {
-        for (int i = 1; i <= newElIndex; ++i) {
+    if (newElIndex != 0) {
+        for (int i = 1; i < newElIndex; ++i) {
             curr = curr->next;
         }
         next = curr->next;
@@ -71,6 +70,7 @@ void addToList(list*&start, int& length) {
     cout << "Time taken adding new element: " << duration.count() << " microseconds" << endl;
     length += 1;
 }
+
 
 void showToList(list* start, int length) {
     list* curr = start;
