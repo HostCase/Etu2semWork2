@@ -177,8 +177,8 @@ void swaplist(list*& start,int length) {
 void removebyindex(list*&start, int& length) {
     int index=-100;
     cout << "Enter index of element" << endl;
-    while (index < 0 || index > length) {
-        cout << "0<Index< " << length << endl;
+    while (index < 1 || index > length) {
+        cout << "1<Index< " << length << endl;
         cin >> index;
     }
     auto startTime = chrono::high_resolution_clock::now();
@@ -262,8 +262,8 @@ void deleteList(list*& start,int& length) {
 void getvaluebyindex(list* start, int length) {
     int index = -100;
     cout << "Enter index of element" << endl;
-    while (index < 0 || index >= length) {
-        cout << "0 <= Index < " << length << endl;
+    while (index < 1 || index >= length) {
+        cout << "1 <= Index < " << length << endl;
         cin >> index;
     }
     index -= 1;
